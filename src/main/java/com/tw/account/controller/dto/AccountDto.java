@@ -4,6 +4,9 @@ import com.tw.account.model.Account;
 
 import javax.validation.constraints.*;
 
+/**
+ * DTO 主要负责前端数据与业务层的交互
+ */
 public class AccountDto {
     @NotBlank
     @Email
