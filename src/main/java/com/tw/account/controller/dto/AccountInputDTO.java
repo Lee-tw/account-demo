@@ -1,13 +1,16 @@
 package com.tw.account.controller.dto;
 
 import com.tw.account.model.Account;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 
 import javax.validation.constraints.*;
 
 /**
  * DTO 主要负责前端数据与业务层的交互
  */
-public class AccountDto {
+@AllArgsConstructor
+public class AccountInputDTO {
     @NotBlank
     @Email
     private final String email;
@@ -17,12 +20,6 @@ public class AccountDto {
 
     @NotBlank
     private final String password;
-
-    public AccountDto(String email, String name, String password) {
-        this.email = email;
-        this.name = name;
-        this.password = password;
-    }
 
     public Account toAccount() {
         Account account = new Account();

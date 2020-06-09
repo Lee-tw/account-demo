@@ -1,6 +1,5 @@
 package com.tw.account.controller.exception;
 
-import com.tw.account.controller.errorCode.ErrorCode;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -20,12 +19,6 @@ public class ControllerExceptionAdvice {
     @ResponseStatus(HttpStatus.NOT_FOUND)       // 不加 @ResponseStatus，直接走@ExceptionHandler，返回状态码200
     @ResponseBody
     public String handleAccountException(AccountException e) {
-        if (e.getErrorCode() == ErrorCode.USER_PASSWORD_ERROR.getCode()) {
-            return "Password is wrong";
-        }
-        else if (e.getErrorCode() == ErrorCode.USER_NOT_EXIST_ERROR.getCode()) {
-            return "User doesn't exist";
-        }
-        return "User exists";
+        return e.getErrorMsg();
     }
 }

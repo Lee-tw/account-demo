@@ -1,6 +1,8 @@
 package com.tw.account.controller;
 
 import com.google.gson.Gson;
+import com.tw.account.controller.errorCode.ErrorCode;
+import com.tw.account.controller.exception.AccountException;
 import com.tw.account.model.Account;
 import com.tw.account.service.AccountService;
 
@@ -24,6 +26,7 @@ import org.springframework.util.MultiValueMap;
 
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -53,13 +56,8 @@ public class LoginControllerTest {
     public void setUp() {
         initMocks(this);
 
-        String email = "aa@gmail.com";
-        String name = "lee";
-        String password = "123";
-        String wrongPassword = "111";
-
-        account = Account.builder().email(email).name(name).password(password).build();
-        invalidAccount = Account.builder().email(email).name(name).password(wrongPassword).build();
+        account = Account.builder().email("aa@gmail.com").name("lee").password("123").build();
+        invalidAccount = Account.builder().email("aa@gmail.com").name("lee").password("111").build();
     }
 
     @Test
@@ -68,10 +66,13 @@ public class LoginControllerTest {
         String jsonObject = gson.toJson(account);
 
         when(accountService.findAccountByEmail("aa@gmail.com")).thenReturn(Optional.of(account));
-        mockMvc.perform(post("/login")
+        String response = mockMvc.perform(post("/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonObject))
-                .andExpect(status().isOk());
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        assertEquals("Success", response);
     }
 
     @Test
@@ -81,10 +82,13 @@ public class LoginControllerTest {
 
         when(accountService.findAccountByEmail("aa@gmail.com")).thenReturn(Optional.of(account));
 
-        mockMvc.perform(post("/login")
+        String response = mockMvc.perform(post("/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonObject))
-                .andExpect(status().isNotFound());
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        assertEquals("Password is not correct", response);
     }
 
     @Test
@@ -97,10 +101,13 @@ public class LoginControllerTest {
         Gson gson = new Gson();
         String jsonObject = gson.toJson(newAccount);
 
-        mockMvc.perform(post("/accounts")
+        String response = mockMvc.perform(post("/accounts")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonObject))
-                .andExpect(status().isOk());
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        assertEquals("Success", response);
     }
 
     @Test
@@ -108,11 +115,15 @@ public class LoginControllerTest {
         Gson gson = new Gson();
         String jsonObject = gson.toJson(account);
 
-        when(accountService.createAccount(account)).thenThrow(Mockito.mock(DataAccessException.class));
+        // 当any() 换为 account 时，account不同，导致accountService.createAccount() 没有运行
+        when(accountService.createAccount(any())).thenThrow(new DataAccessException("..."){ });
 
-        mockMvc.perform(post("/accounts")
+        String response = mockMvc.perform(post("/accounts")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonObject))
-                .andExpect(status().isNotFound());
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        assertEquals("User exists", response);
     }
 }

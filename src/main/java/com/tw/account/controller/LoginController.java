@@ -1,6 +1,6 @@
 package com.tw.account.controller;
 
-import com.tw.account.controller.dto.AccountDto;
+import com.tw.account.controller.dto.AccountInputDTO;
 import com.tw.account.controller.errorCode.ErrorCode;
 import com.tw.account.controller.exception.AccountException;
 import com.tw.account.model.Account;
@@ -21,8 +21,8 @@ public class LoginController {
     private AccountService accountService;
 
     @PostMapping("/login")
-    public String login(@Valid @RequestBody AccountDto accountDto) {
-        Account account = accountDto.toAccount();
+    public String login(@Valid @RequestBody AccountInputDTO accountInputDTO) {
+        Account account = accountInputDTO.toAccount();
         Optional<Account> accountByEmail = accountService.findAccountByEmail(account.getEmail());
         if (accountByEmail.isPresent()) {
             if (accountByEmail.get().getPassword().equals(account.getPassword())) {
@@ -36,8 +36,8 @@ public class LoginController {
     }
 
     @PostMapping("/accounts")
-    public String createAccount(@Valid @RequestBody AccountDto accountDto) {
-        Account account = accountDto.toAccount();
+    public String createAccount(@Valid @RequestBody AccountInputDTO accountInputDTO) {
+        Account account = accountInputDTO.toAccount();
         try {
             accountService.createAccount(account);
         } catch (DataAccessException e) {
