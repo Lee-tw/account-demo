@@ -2,7 +2,6 @@ package com.tw.account.controller.dto;
 
 import com.tw.account.model.Account;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 
 import javax.validation.constraints.*;
 
