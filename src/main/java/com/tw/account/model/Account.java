@@ -11,7 +11,7 @@ import javax.persistence.Table;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-//@Data     会为类的所有属性自动生成setter/getter、equals、canEqual、hashCode、toString方法
+//@Data    会为类的所有属性自动生成setter/getter、equals、canEqual、hashCode、toString方法
 @Getter
 @Setter
 public class Account {
