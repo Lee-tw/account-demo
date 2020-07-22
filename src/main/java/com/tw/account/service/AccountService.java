@@ -1,6 +1,5 @@
 package com.tw.account.service;
 
-import com.tw.account.controller.exception.AccountException;
 import com.tw.account.dao.AccountDao;
 import com.tw.account.model.Account;
 import org.springframework.beans.factory.annotation.Autowired;
